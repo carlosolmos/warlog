@@ -152,11 +152,11 @@ func (m model) View() string {
 	case listView:
 		return m.list.View()
 	case editView:
-		return fmt.Sprintf("%s\n%s\n\n%s", mainHeader("New Entry"), m.textarea.View(), "ctrl+s: Save | ctrl+b: Cancel")
+		return fmt.Sprintf("%s\n%s\n%s", mainHeader("New Entry"), m.textarea.View(), commandBar("ctrl+s: Save | ctrl+b: Cancel"))
 	case viewerView:
 		content, _ := os.ReadFile(m.selected)
 		out, _ := m.fileViewer.Render(string(content))
-		return out + "\n\nPress ctrl+b to go back."
+		return fmt.Sprintf("%s\n%s\n%s", mainHeader(m.selected), out, commandBar("ctrl+b: Go back | ctrl+q: Quit"))
 	default:
 		return ""
 	}
@@ -215,12 +215,33 @@ func loadFiles() []string {
 }
 
 func mainHeader(message string) string {
-	var style = lipgloss.NewStyle().
+	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(lipgloss.Color("#FAFAFA")).
-		Background(lipgloss.Color("#7D56F4")).
-		PaddingBottom(1).
+		Border(lipgloss.DoubleBorder()).
+		BorderForeground(lipgloss.Color("#05d9e8")).
+		Foreground(lipgloss.Color("#d1f7ff")).
+		Background(lipgloss.Color("#01012b")).
+		PaddingBottom(0).
 		PaddingLeft(4).
-		Width(45)
-	return style.Render(message)
+		Width(80).
+		Render(message)
+}
+
+func commandBar(options string) string {
+	return lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("#05d9e8")).
+		Foreground(lipgloss.Color("#d1f7ff")).
+		Background(lipgloss.Color("#01012b")).
+		PaddingLeft(4).
+		Width(80).
+		Render(options)
+}
+
+func applyLipglossBorder(content string) string {
+	return lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("#05d9e8")).
+		Padding(0, 0, 0, 0).
+		Render(content)
 }
