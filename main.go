@@ -16,7 +16,7 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
-var dataDir = "./data"
+var dataDir = "~/.warlog"
 
 type model struct {
 	list       list.Model
